@@ -37,7 +37,8 @@ public class CharacterBehaviour : MonoBehaviour
     //Encounter
     private bool GenerateEncounter = false;
     private bool EncounterAvailable = true;
-    
+
+
     // Start is called before the first frame update
     private void Start()
     {
@@ -77,11 +78,12 @@ public class CharacterBehaviour : MonoBehaviour
     }
 
 
-    void OnTriggerStay2D(Collider2D col)
+    void OnTriggerEnter2D(Collider2D col)
     {
         if(col.gameObject.name == "Props")
         {
             GenerateEncounter = true;
+            StartCoroutine(Check());
         }
     }
 
@@ -89,7 +91,10 @@ public class CharacterBehaviour : MonoBehaviour
     {
         if(col.gameObject.name == "Props")
         {
+            StopCoroutine(Check());
+            Debug.Log("Left");
             EncounterAvailable = true;
+            GenerateEncounter = false;
         }
     }
 
@@ -97,12 +102,8 @@ public class CharacterBehaviour : MonoBehaviour
     {
         if (GenerateEncounter == true && isWalking == true && EncounterAvailable == true)
         {
-            if(Random.Range(0,100) <= battleRate)
-            {
-                StartCoroutine(Check());
-                GenerateEncounter = false;
-                EncounterAvailable = false;
-            }
+            //StartCoroutine(Check());
+
         }
     }
 
@@ -150,15 +151,27 @@ public class CharacterBehaviour : MonoBehaviour
 
     IEnumerator Check()
     {
-        for(;;)
+        Debug.Log("Doing Something");
+        while(GenerateEncounter)
         {
-            int rng = Random.Range(0,100);
-            if(rng <= battleRate)
+            for(;;)
             {
-                SceneManager.LoadScene("BattleScene");
-                MusicManager.Instance.PlayTrack(TrackID.Battle);
+                int rng = Random.Range(0,100);
+                if(rng <= battleRate)
+                {
+                    SceneManager.LoadScene("BattleScene");
+                    MusicManager.Instance.PlayTrack(TrackID.Battle);
+                    GenerateEncounter = false;
+                    EncounterAvailable = false;
+                }
+                Debug.Log(rng);
+
+                if(!GenerateEncounter)
+                    break;
+
+
+                yield return new WaitForSeconds(1.0f);
             }
-            yield return new WaitForSeconds(1.0f);
         }
 
     }
