@@ -36,6 +36,7 @@ public class UiBehaviour : MonoBehaviour
     public void UnloadScene()
     {
         SceneManager.LoadScene("Main");
+        MusicManager.Instance.PlayTrack(TrackID.Overworld);
     }
 
     public void OnExitButtonPressed()

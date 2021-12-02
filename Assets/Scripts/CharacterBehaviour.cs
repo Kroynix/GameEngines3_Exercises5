@@ -43,6 +43,7 @@ public class CharacterBehaviour : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+
     }
 
     // Update is called once per frame
@@ -98,8 +99,7 @@ public class CharacterBehaviour : MonoBehaviour
         {
             if(Random.Range(0,100) <= battleRate)
             {
-                //Debug.Log("Battle!");
-                SceneManager.LoadSceneAsync("BattleScene");
+                StartCoroutine(Check());
                 GenerateEncounter = false;
                 EncounterAvailable = false;
             }
@@ -147,6 +147,23 @@ public class CharacterBehaviour : MonoBehaviour
     }
 
 
+
+    IEnumerator Check()
+    {
+        for(;;)
+        {
+            int rng = Random.Range(0,100);
+            if(rng <= battleRate)
+            {
+                SceneManager.LoadScene("BattleScene");
+                MusicManager.Instance.PlayTrack(TrackID.Battle);
+            }
+            yield return new WaitForSeconds(1.0f);
+        }
+
+    }
+
+
 }
 
 enum StateEnum
@@ -182,3 +199,4 @@ public class isGrounded : playerState
         return this;
     }
 }
+
